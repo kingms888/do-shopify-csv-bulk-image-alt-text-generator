@@ -1,0 +1,1 @@
+# do-shopify-csv-bulk-image-alt-text-generator
