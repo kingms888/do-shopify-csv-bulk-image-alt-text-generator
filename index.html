@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopify CSV Bulk Image Alt Text Generator | SEO tool for Shopify & Etsy sellers</title>
+  <meta name="description" content="Free pure-frontend tool: upload your Shopify product CSV, auto-generate SEO-friendly image alt text in bulk, preview and copy to clipboard. Built for Shopify sellers, Etsy sellers, and developers.">
+  <meta name="keywords" content="shopify csv bulk alt text generator, etsy listing image seo audit, csv to json converter, developer tools, csv/json tools, shopify sellers, etsy sellers, shopify csv bulk image alt text generator">
+  <link rel="canonical" href="https://tool.example/shopify-csv-alt-text-generator">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(145deg, #f7f9fc 0%, #eef2f6 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem;
+      color: #1e293b;
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #0f2b46, #1e4a6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .subhead {
+      font-size: 1.1rem;
+      color: #475569;
+      margin-top: 0.5rem;
+      font-weight: 400;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 800px) {
+      .tool-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e2e8f0;
+    }
+
+    .card h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .file-drop {
+      border: 2px dashed #cbd5e1;
+      border-radius: 1rem;
+      padding: 1.8rem 1rem;
+      text-align: center;
+      background: #f8fafc;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .file-drop:hover {
+      border-color: #3b82f6;
+      background: #f0f7ff;
+    }
+
+    .file-drop input {
+      display: none;
+    }
+
+    .file-label {
+      font-weight: 500;
+      color: #1e40af;
+      background: #dbeafe;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .file-name {
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+      color: #334155;
+    }
+
+    .btn {
+      background: #1e4a6b;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 4px 8px rgba(30, 74, 107, 0.2);
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background: #0f2b46;
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .preview-box {
+      background: #f1f5f9;
+      border-radius: 1rem;
+      padding: 1rem;
+      max-height: 280px;
+      overflow-y: auto;
+      margin-top: 1.2rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .preview-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.8rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+
+    .preview-item .handle {
+      font-weight: 600;
+      color: #0f2b46;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .preview-item .alt {
+      color: #334155;
+      margin-left: 0.8rem;
+      text-align: right;
+      font-size: 0.85rem;
+      word-break: break-word;
+      flex: 2;
+    }
+
+    .copy-btn {
+      background: #e2e8f0;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-left: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      background: #cbd5e1;
+    }
+
+    .ad-placeholder {
+      background: #fef9c3;
+      border: 1px solid #fde047;
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+      margin: 2rem 0 1rem;
+      font-size: 0.9rem;
+      color: #713f12;
+    }
+
+    .ad-placeholder span {
+      font-weight: 600;
+    }
+
+    .resource-section {
+      background: #f0f9ff;
+      border-radius: 1rem;
+      padding: 1.2rem;
+      margin-top: 1.5rem;
+      border: 1px solid #bae6fd;
+    }
+
+    .resource-section h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #075985;
+    }
+
+    .resource-section a {
+      color: #0369a1;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+      margin-right: 1rem;
+      margin-top: 0.3rem;
+    }
+
+    .resource-section a:hover {
+      text-decoration: underline;
+    }
+
+    .privacy-note {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    .status-message {
+      font-size: 0.9rem;
+      margin-top: 0.8rem;
+      color: #166534;
+    }
+
+    .error-message {
+      color: #b91c1c;
+    }
+
+    .footer-note {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    /* responsive */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .container {
+        padding: 1.5rem 1rem;
+      }
+      .card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛍️ Shopify CSV Bulk Alt Text Generator</h1>
+      <p class="subhead">Upload product CSV → auto-generate SEO alt text → preview & copy</p>
+    </header>
+
+    <!-- Tool grid: left upload, right preview -->
+    <div class="tool-grid">
+      <!-- Left card: upload & generate -->
+      <div class="card">
+        <h2>📁 1. Upload CSV</h2>
+        <div class="file-drop" id="fileDrop">
+          <input type="file" id="csvFileInput" accept=".csv,text/csv" />
+          <p style="color: #475569;">Drag & drop or <span class="file-label">browse</span></p>
+          <p style="font-size: 0.8rem; margin-top: 0.5rem;">CSV must have a column named <strong>Handle</strong> (product handle).</p>
+        </div>
+        <div id="fileStatus" class="file-name"></div>
+        <button class="btn" id="generateBtn" disabled>⚡ Generate Alt Text</button>
+        <div id="generationStatus" class="status-message"></div>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: #475569;">
+          <strong>Format:</strong> handle → <em>“Shopify [handle] – product photo, high quality, SEO optimized”</em>
+        </div>
+      </div>
+
+      <!-- Right card: preview & copy -->
+      <div class="card">
+        <h2>👁️ 2. Preview & Copy</h2>
+        <div id="previewContainer" class="preview-box">
+          <p style="color: #94a3b8; text-align: center; padding: 2rem 0;">Generated alt text will appear here</p>
+        </div>
+        <button class="btn" id="copyAllBtn" disabled>📋 Copy all alt text</button>
+        <div id="copyStatus" class="status-message"></div>
+      </div>
+    </div>
+
+    <!-- Visible ad placeholder (non-intrusive) -->
+    <div class="ad-placeholder">
+      <span>📢 Ad space</span> – Shopify SEO audit? Try <strong>EtsyHive</strong> (affiliate) – <a href="#" style="color:#1e40af;">learn more</a>
+    </div>
+
+    <!-- Affiliate/resource placeholder -->
+    <div class="resource-section">
+      <h3>📚 Resources for sellers</h3>
+      <a href="#">Shopify SEO guide</a> 
+      <a href="#">Etsy listing image audit</a> 
+      <a href="#">CSV to JSON converter</a>
+      <span style="color:#64748b; font-size:0.8rem;">(affiliate links)</span>
+    </div>
+
+    <!-- Privacy note -->
+    <div class="privacy-note">
+      🔒 Privacy: events may be counted anonymously for product improvement. No credentials collected. 
+      <span id="privacyFlag"></span>
+    </div>
+    <div class="footer-note">
+      ⚡ Pure frontend – your data stays in your browser.
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- Metrics reporting (privacy friendly) ----------
+      window.ORGANISM_METRICS_ENDPOINT = window.ORGANISM_METRICS_ENDPOINT || null; // set by host if needed
+
+      function reportEvent(name, payload = {}) {
+        if (window.ORGANISM_METRICS_ENDPOINT) {
+          try {
+            fetch(window.ORGANISM_METRICS_ENDPOINT, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ event: name, ...payload, ts: Date.now() }),
+              keepalive: true,
+            }).catch(() => {});
+          } catch (e) {}
+        }
+        // else: no endpoint configured – do nothing (no tracking)
+      }
+
+      // Show privacy flag if endpoint configured (optional)
+      const flagEl = document.getElementById('privacyFlag');
+      if (window.ORGANISM_METRICS_ENDPOINT) {
+        flagEl.textContent = ' (analytics endpoint active)';
+      } else {
+        flagEl.textContent = ' (no external analytics)';
+      }
+
+      // ---------- DOM elements ----------
+      const fileInput = document.getElementById('csvFileInput');
+      const fileDrop = document.getElementById('fileDrop');
+      const fileStatus = document.getElementById('fileStatus');
+      const generateBtn = document.getElementById('generateBtn');
+      const generationStatus = document.getElementById('generationStatus');
+      const previewContainer = document.getElementById('previewContainer');
+      const copyAllBtn = document.getElementById('copyAllBtn');
+      const copyStatus = document.getElementById('copyStatus');
+
+      let parsedRows = []; // array of { handle: string, alt: string }
+
+      // ---------- File handling ----------
+      function handleFile(file) {
+        if (!file) return;
+        const extension = file.name.split('.').pop().toLowerCase();
+        if (extension !== 'csv') {
+          fileStatus.textContent = '⚠️ Please select a .csv file';
+          fileStatus.style.color = '#b91c1c';
+          generateBtn.disabled = true;
+          parsedRows = [];
+          renderPreview([]);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target.result;
+          try {
+            const rows = parseCSV(text);
+            if (!rows || rows.length === 0) {
+              throw new Error('Empty CSV');
+            }
+            // find handle column (case-insensitive)
+            const headers = rows[0].map(h => h.trim().toLowerCase());
+            const handleIndex = headers.indexOf('handle');
+            if (handleIndex === -1) {
+              throw new Error('Missing "Handle" column');
+            }
+            // extract handles, skip empty
+            const handles = [];
+            for (let i = 1; i < rows.length; i++) {
+              const row = rows[i];
+              if (row && row[handleIndex] && row[handleIndex].trim() !== '') {
+                handles.push(row[handleIndex].trim());
+              }
+            }
+            if (handles.length === 0) {
+              throw new Error('No product handles found');
+            }
+            // store handles (alt generated later)
+            parsedRows = handles.map(handle => ({ handle, alt: '' }));
+            fileStatus.textContent = `✅ Loaded ${handles.length} handles from ${file.name}`;
+            fileStatus.style.color = '#166534';
+            generateBtn.disabled = false;
+            generationStatus.textContent = '';
+            copyStatus.textContent = '';
+            renderPreview([]); // clear preview until generate
+            reportEvent('csv_uploaded', { rows: handles.length });
+          } catch (err) {
+            fileStatus.textContent = `❌ ${err.message}`;
+            fileStatus.style.color = '#b91c1c';
+            generateBtn.disabled = true;
+            parsedRows = [];
+            renderPreview([]);
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      // minimal CSV parser (handles quoted commas)
+      function parseCSV(text) {
+        const rows = [];
+        let row = [];
+        let field = '';
+        let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+          const ch = text[i];
+          if (inQuotes) {
+            if (ch === '"') {
+              if (text[i+1] === '"') { // escaped quote
+                field += '"';
+                i++;
+              } else {
+                inQuotes = false;
+              }
+            } else {
+              field += ch;
+            }
+          } else {
+            if (ch === '"') {
+              inQuotes = true;
+            } else if (ch === ',') {
+              row.push(field.trim());
+              field = '';
+            } else if (ch === '\n' || ch === '\r') {
+              if (ch === '\r' && text[i+1] === '\n') i++; // skip CRLF
+              row.push(field.trim());
+              if (row.some(cell => cell !== '')) {
+                rows.push(row);
+              }
+              row = [];
+              field = '';
+            } else {
+              field += ch;
+            }
+          }
+        }
+        // last row
+        if (field.trim() !== '' || row.length > 0) {
+          row.push(field.trim());
+          if (row.some(cell => cell !== '')) rows.push(row);
+        }
+        return rows;
+      }
+
+      // ---------- Generate alt text ----------
+      function generateAltText() {
+        if (parsedRows.length === 0) {
+          generationStatus.textContent = 'No data. Upload a CSV first.';
+          generationStatus.style.color = '#b91c1c';
+          return;
+        }
+        // generate alt text for each handle
+        parsedRows = parsedRows.map(item => {
+          const cleanHandle = item.handle.replace(/[^a-zA-Z0-9]+/g, ' ').trim();
+          const alt = `Shopify ${cleanHandle} – product photo, high quality, SEO optimized`;
+          return { handle: item.handle, alt };
+        });
+        renderPreview(parsedRows);
+        copyAllBtn.disabled = false;
+        generationStatus.textContent = `✨ Generated alt text for ${parsedRows.length} images.`;
+        generationStatus.style.color = '#166534';
+        reportEvent('alt_text_generated', { count: parsedRows.length });
+      }
+
+      // ---------- Render preview ----------
+      function renderPreview(items) {
+        if (!items || items.length === 0) {
+          previewContainer.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 2rem 0;">Generated alt text will appear here</p>';
+          copyAllBtn.disabled = true;
+          return;
+        }
+        const html = items.map((item, idx) => {
+          return `
+            <div class="preview-item">
+              <span class="handle" title="${item.handle}">${item.handle}</span>
+              <span class="alt">${item.alt}</span>
+              <button class="copy-btn" data-index="${idx}" data-alt="${encodeURIComponent(item.alt)}">📋</button>
+            </div>
+          `;
+        }).join('');
+        previewContainer.innerHTML = html;
+        // attach copy listeners to individual buttons
+        previewContainer.querySelectorAll('.copy-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const alt = decodeURIComponent(btn.dataset.alt);
+            copyToClipboard(alt);
+            copyStatus.textContent = `✅ Copied alt text for "${btn.parentElement.querySelector('.handle').textContent}"`;
+            copyStatus.style.color = '#166534';
+            reportEvent('copy_single_alt', { handle: btn.parentElement.querySelector('.handle').textContent });
+          });
+        });
+      }
+
+      // ---------- Copy all ----------
+      function copyAll() {
+        if (parsedRows.length === 0) return;
+        const allText = parsedRows.map(item => `${item.handle}\t${item.alt}`).join('\n');
+        copyToClipboard(allText);
+        copyStatus.textContent = `✅ Copied ${parsedRows.length} alt texts (tab-separated)`;
+        copyStatus.style.color = '#166534';
+        reportEvent('copy_all_alt', { count: parsedRows.length });
+      }
+
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).catch(() => {
+          // fallback
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+        });
+      }
+
+      // ---------- Event listeners ----------
+      fileDrop.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleFile(e.target.files[0]);
+        }
+      });
+      fileDrop.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileDrop.style.borderColor = '#3b82f6';
+      });
+      fileDrop.addEventListener('dragleave', () => {
+        fileDrop.style.borderColor = '#cbd5e1';
+      });
+      fileDrop.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileDrop.style.borderColor = '#cbd5e1';
+        if (e.dataTransfer.files.length > 0) {
+          fileInput.files = e.dataTransfer.files;
+          handleFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      generateBtn.addEventListener('click', generateAltText);
+      copyAllBtn.addEventListener('click', copyAll);
+
+      // initial report
+      reportEvent('tool_loaded', { source: 'shopify-alt-generator' });
+    })();
+  </script>
+
+<section data-organism-discovery="hub" style="margin:32px auto 20px;max-width:1040px;padding:16px;border-top:1px solid #d9e2ec;color:#475569;font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <strong style="display:block;color:#0f172a;margin-bottom:6px">More free browser tools</strong>
+  <p style="margin:0 0 8px">This page is part of an autonomous micro-tool network. Explore the live tool directory and related utilities.</p>
+  <p style="margin:0"><a href="https://kingms888.github.io/do-digital-organism-index/" style="color:#0f766e;font-weight:700">Open the tool directory</a> </p>
+</section>
+</body>
+</html>
